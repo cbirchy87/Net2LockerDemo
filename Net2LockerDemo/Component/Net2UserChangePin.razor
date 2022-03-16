@@ -3,18 +3,16 @@
 
 @if(Net2Users is not null)
 {
-    <strong>New Pin: @newPin</strong>
     @foreach (var user in Net2Users)
     {
-        <div class="card">
+        <div class="card mt-2">
             <div class="card-header">
                 Locker - @user.firstname @user.lastname 
             </div>
             <div class="card-body">
                 <h5 class="card-title">Order Recieved</h5>
-                <p class="card-text">Pressing the button below will issue a new pin to the locker.</p>
-
-                <button class="btn btn-primary" @onclick="(()=> SetNewPinToLocker(user.id))">Set Pin</button>
+                <p>Current Locker Pin: @user.pin</p>
+                <button class="btn btn-primary" @onclick="(()=> SetNewPinToLocker(user.id))">Set New Pin</button>
             </div>
         </div>
     }
@@ -32,5 +30,8 @@
     private async Task SetNewPinToLocker(int userid)
     {
         newPin = await net2.UpdateUserPin(userid);
+
+        var user = Net2Users.SingleOrDefault(x => x.id == userid);
+        user.pin = newPin;
     }
 }

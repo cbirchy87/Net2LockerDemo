@@ -7,7 +7,7 @@ namespace Net2LockerDemo.Services
     {
         private readonly HttpClient http;
         private const string apibasessl = "https://10.10.74.12:8443/api/v1";
-        private const string apibase = "http://10.10.74.12:8080/api/v1";
+        private const string apibase = "http://127.0.0.1:8080/api/v1";
         
 
         private AuthModel auth;
@@ -59,6 +59,8 @@ namespace Net2LockerDemo.Services
                 id = userId,
                 pin = GenerateRandomNo().ToString()
             };
+            var newPin = GenerateRandomNo();
+
             var responce = await http.PutAsJsonAsync($"/api/v1/users/{userId}", updateUser);
             if (responce.IsSuccessStatusCode)
             {
@@ -73,6 +75,20 @@ namespace Net2LockerDemo.Services
             int _max = 9999;
             Random _rdm = new Random();
             return _rdm.Next(_min, _max);
+        }
+
+        private async Task<bool> CheckPinIsInUser(int pin)
+        {
+            var users = await GetNet2Users();
+            foreach (var item in users)
+            {
+                if (pin.ToString() == item.pin)
+                {
+                    return true;
+                }
+                return false;   
+            }
+            return false;
         }
     }
 }
