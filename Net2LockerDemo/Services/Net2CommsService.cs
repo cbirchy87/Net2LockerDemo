@@ -50,17 +50,29 @@ namespace Net2LockerDemo.Services
             return null;
         }
 
-        public async Task UpdateUserPin(int userId, string newPin)
+        public async Task<string> UpdateUserPin(int userId)
         {
-           // await SetAccessToken();
-            http.DefaultRequestHeaders.Add("Authorization", $"{authResponse.token_type} {authResponse.access_token}");
+            // await SetAccessToken();
+            // http.DefaultRequestHeaders.Add("Authorization", $"{authResponse.token_type} {authResponse.access_token}");
             var updateUser = new Net2User
             {
                 id = userId,
-                pin = newPin
+                pin = GenerateRandomNo().ToString()
             };
             var responce = await http.PutAsJsonAsync($"/api/v1/users/{userId}", updateUser);
+            if (responce.IsSuccessStatusCode)
+            {
+                return updateUser.pin;
+            }
+            return "";
 
+        }
+        private int GenerateRandomNo()
+        {
+            int _min = 1000;
+            int _max = 9999;
+            Random _rdm = new Random();
+            return _rdm.Next(_min, _max);
         }
     }
 }

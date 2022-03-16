@@ -3,6 +3,7 @@
 
 @if(Net2Users is not null)
 {
+    <strong>New Pin: @newPin</strong>
     @foreach (var user in Net2Users)
     {
         <div class="card">
@@ -21,6 +22,7 @@
 
 @code {
     public List<Net2User> Net2Users { get; set; }
+    public string newPin { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -29,6 +31,6 @@
 
     private async Task SetNewPinToLocker(int userid)
     {
-        await net2.UpdateUserPin(userid, "8888");
+        newPin = await net2.UpdateUserPin(userid);
     }
 }
