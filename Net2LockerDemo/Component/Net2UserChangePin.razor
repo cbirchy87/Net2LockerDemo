@@ -1,5 +1,6 @@
 ﻿@using Net2LockerDemo.Services.Models
 @inject Net2CommsService net2;
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage;
 
 @if(Net2Users is not null)
 {
@@ -21,15 +22,18 @@
 @code {
     public List<Net2User> Net2Users { get; set; }
     public string newPin { get; set; }
+    public AuthResponse authResponse { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Net2Users = await net2.GetNet2Users();
+        authResponse = await net2.GetAccessToken();
+        await sessionStorage.SetItemAsync<AuthResponse>("auth",authResponse);
+        Net2Users = await net2.GetNet2Users(authResponse);
     }
 
     private async Task SetNewPinToLocker(int userid)
     {
-        newPin = await net2.UpdateUserPin(userid);
+        newPin = await net2.UpdateUserPin(userid, authResponse);
 
         var user = Net2Users.SingleOrDefault(x => x.id == userid);
         user.pin = newPin;
