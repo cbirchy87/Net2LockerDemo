@@ -1,13 +1,18 @@
 ﻿using Net2LockerDemo.Services.Models;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Net2LockerDemo.Services
 {
     public class Net2CommsService
     {
         private readonly HttpClient http;
+        //Net2 Server IP
         private const string apibasessl = "https://10.10.74.12:8443/api/v1";
         private const string apibase = "http://10.10.74.12:8080/api/v1";
         
@@ -17,11 +22,12 @@ namespace Net2LockerDemo.Services
         public Net2CommsService()
         {
             this.http = new HttpClient();
+            //Auth details. Need to fill in the client ID, username and password. These are Net2 Operators. 
             auth = new AuthModel
             {
                 username = "System engineer",
-                password = "admin",
-                client_id = "bd7073d188fb4d36818ea28a539a6488",
+                password = "***",
+                client_id = "***",
                 scope = "offline_access",
                 grant_type = "password"
             };
@@ -51,17 +57,6 @@ namespace Net2LockerDemo.Services
                 return result;
             }
             return null;
-
-
-
-            //http.DefaultRequestHeaders.Add("Authorization", $"{authResponse.token_type} {authResponse.access_token}");
-            //var responce = await http.GetAsync($"/api/v1/users");
-            //if (responce.IsSuccessStatusCode)
-            //{
-            //    var result = await responce.Content.ReadFromJsonAsync<List<Net2User>>();
-            //    return result;
-            //}
-            //return null;
         }
 
         public async Task<string> UpdateUserPin(int userId, AuthResponse authResponse)
@@ -93,19 +88,5 @@ namespace Net2LockerDemo.Services
             Random _rdm = new Random();
             return _rdm.Next(_min, _max);
         }
-
-        //private async Task<bool> CheckPinIsInUser(int pin)
-        //{
-        //    var users = await GetNet2Users();
-        //    foreach (var item in users)
-        //    {
-        //        if (pin.ToString() == item.pin)
-        //        {
-        //            return true;
-        //        }
-        //        return false;   
-        //    }
-        //    return false;
-        //}
     }
 }
